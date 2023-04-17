@@ -24,9 +24,26 @@ class _DemoPageState extends State<DemoPage> {
       body: Center(
         child: _isLoading
             ? const CircularProgressIndicator()
-            : ElevatedButton(
-                onPressed: uploadFile,
-                child: const Text('Upload File'),
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.green),
+                    ),
+                    onPressed: uploadFile,
+                    child: const Text('Upload File'),
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red),
+                    ),
+                    onPressed: deleteFile,
+                    child: const Text('Delete File'),
+                  ),
+                ],
               ),
       ),
     );
@@ -39,23 +56,44 @@ class _DemoPageState extends State<DemoPage> {
       setState(() => _isLoading = true);
       try {
         File file = File(result.files.single.path!);
-        await _storageService.uploadFile(
-          file: file,
-          path: 'eicar-test-file.com',
-        );
+        await _storageService.uploadFile(file: file);
         setState(() => _isLoading = false);
-        showSnackbar(context: context);
+        showSnackbar(
+          context: context,
+          text: 'File uploaded successfully.',
+        );
       } catch (e) {
         setState(() => _isLoading = false);
-        debugPrint(e.toString());
+        showSnackbar(
+          context: context,
+          text: e.toString(),
+        );
       }
     }
   }
 
-  showSnackbar({required BuildContext context}) {
+  void deleteFile() async {
+    setState(() => _isLoading = true);
+    try {
+      await _storageService.deleteFile();
+      setState(() => _isLoading = false);
+      showSnackbar(
+        context: context,
+        text: 'File deleted successfully.',
+      );
+    } catch (e) {
+      setState(() => _isLoading = false);
+      showSnackbar(
+        context: context,
+        text: e.toString(),
+      );
+    }
+  }
+
+  showSnackbar({required BuildContext context, required String text}) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('File uploaded successfully.'),
+      SnackBar(
+        content: Text(text),
       ),
     );
   }
