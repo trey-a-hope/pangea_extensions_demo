@@ -24,26 +24,13 @@ class _DemoPageState extends State<DemoPage> {
       body: Center(
         child: _isLoading
             ? const CircularProgressIndicator()
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.green),
-                    ),
-                    onPressed: uploadFile,
-                    child: const Text('Upload File'),
-                  ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.red),
-                    ),
-                    onPressed: deleteFile,
-                    child: const Text('Delete File'),
-                  ),
-                ],
+            : ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.green),
+                ),
+                onPressed: uploadFile,
+                child: const Text('Upload File'),
               ),
       ),
     );
@@ -69,24 +56,6 @@ class _DemoPageState extends State<DemoPage> {
           text: e.toString(),
         );
       }
-    }
-  }
-
-  void deleteFile() async {
-    setState(() => _isLoading = true);
-    try {
-      await _storageService.deleteFile();
-      setState(() => _isLoading = false);
-      showSnackbar(
-        context: context,
-        text: 'File deleted successfully.',
-      );
-    } catch (e) {
-      setState(() => _isLoading = false);
-      showSnackbar(
-        context: context,
-        text: e.toString(),
-      );
     }
   }
 
